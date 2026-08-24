@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 150 12% 97%;
+    --foreground: 160 30% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 160 30% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 160 30% 8%;
+
+    --primary: 155 19% 54%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 155 10% 92%;
+    --secondary-foreground: 155 25% 15%;
+
+    --muted: 155 8% 93%;
+    --muted-foreground: 155 10% 42%;
+
+    --accent: 32 85% 52%;
+    --accent-foreground: 32 95% 8%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 155 14% 88%;
+    --input: 155 14% 88%;
+    --ring: 155 19% 54%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 150 10% 97%;
+    --sidebar-foreground: 160 20% 20%;
+    --sidebar-primary: 155 19% 54%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 155 10% 92%;
+    --sidebar-accent-foreground: 160 20% 15%;
+    --sidebar-border: 155 14% 88%;
+    --sidebar-ring: 155 19% 54%;
+
+    /* Custom tokens */
+    --primary-dark: 155 22% 38%;
+    --primary-light: 155 25% 85%;
+    --surface-elevated: 0 0% 100%;
+    --badge-new: 155 60% 40%;
+    --badge-sale: 0 75% 55%;
+    --badge-course: 220 75% 55%;
+  }
+
+  .dark {
+    --background: 160 20% 6%;
+    --foreground: 150 15% 95%;
+
+    --card: 160 18% 10%;
+    --card-foreground: 150 15% 95%;
+
+    --popover: 160 18% 10%;
+    --popover-foreground: 150 15% 95%;
+
+    --primary: 155 25% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 155 15% 18%;
+    --secondary-foreground: 150 15% 90%;
+
+    --muted: 155 12% 18%;
+    --muted-foreground: 155 10% 60%;
+
+    --accent: 32 80% 50%;
+    --accent-foreground: 32 95% 95%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 155 12% 20%;
+    --input: 155 12% 20%;
+    --ring: 155 25% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-[hsl(var(--primary-dark))];
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+}

@@ -1,0 +1,232 @@
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  category: string;
+  image: string;
+  badge?: "new" | "sale" | "bestseller" | "course";
+  rating: number;
+  reviews: number;
+  inStock: boolean;
+  specs?: string[];
+}
+
+export const products: Product[] = [
+  {
+    id: "arduino-uno-r3",
+    name: "Arduino Uno R3",
+    description: "The classic open-source microcontroller board based on ATmega328P. Perfect for beginners and prototyping IoT projects.",
+    price: 549,
+    category: "boards",
+    image: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?w=400&h=400&fit=crop",
+    badge: "bestseller",
+    rating: 4.8,
+    reviews: 342,
+    inStock: true,
+    specs: ["ATmega328P", "14 Digital I/O Pins", "6 Analog Inputs", "USB Type-B"],
+  },
+  {
+    id: "raspberry-pi-4",
+    name: "Raspberry Pi 4 Model B (4GB)",
+    description: "Powerful single-board computer with 4GB RAM. Run full Linux, build servers, media centers, or complex IoT hubs.",
+    price: 4999,
+    originalPrice: 5499,
+    category: "boards",
+    image: "https://images.unsplash.com/photo-1629292400880-87c46075624e?w=400&h=400&fit=crop",
+    badge: "sale",
+    rating: 4.9,
+    reviews: 218,
+    inStock: true,
+    specs: ["Broadcom BCM2711", "4GB LPDDR4", "Dual 4K HDMI", "Gigabit Ethernet"],
+  },
+  {
+    id: "esp32-devkit",
+    name: "ESP32 DevKit V1",
+    description: "Wi-Fi + Bluetooth dual-mode microcontroller. The backbone of modern IoT projects with ultra-low power consumption.",
+    price: 399,
+    category: "boards",
+    image: "https://images.unsplash.com/photo-1553406830-ef2513450d76?w=400&h=400&fit=crop",
+    badge: "bestseller",
+    rating: 4.7,
+    reviews: 456,
+    inStock: true,
+    specs: ["240MHz Dual Core", "Wi-Fi 802.11 b/g/n", "Bluetooth 4.2", "34 GPIO Pins"],
+  },
+  {
+    id: "dht22-sensor",
+    name: "DHT22 Temperature & Humidity Sensor",
+    description: "High-precision digital temperature and humidity sensor. Wide measurement range with excellent accuracy.",
+    price: 299,
+    category: "sensors",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=400&fit=crop",
+    rating: 4.5,
+    reviews: 189,
+    inStock: true,
+    specs: ["Temperature: -40~80°C", "Humidity: 0-100%", "±0.5°C Accuracy", "Digital Output"],
+  },
+  {
+    id: "ultrasonic-hcsr04",
+    name: "Ultrasonic Sensor HC-SR04",
+    description: "Non-contact distance measurement module. Measures 2cm to 400cm with high accuracy.",
+    price: 89,
+    category: "sensors",
+    image: "https://images.unsplash.com/photo-1581092162384-8987c1d64718?w=400&h=400&fit=crop",
+    rating: 4.4,
+    reviews: 312,
+    inStock: true,
+    specs: ["Range: 2-400cm", "Accuracy: 3mm", "5V Operating", "Trigger + Echo Pins"],
+  },
+  {
+    id: "relay-module-4ch",
+    name: "5V Relay Module (4-Channel)",
+    description: "Control high-voltage appliances with your microcontroller. Optocoupler isolated for safety.",
+    price: 199,
+    category: "modules",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=400&fit=crop",
+    rating: 4.3,
+    reviews: 145,
+    inStock: true,
+    specs: ["4 Independent Channels", "250V AC / 30V DC", "Optocoupler Isolated", "LED Indicators"],
+  },
+  {
+    id: "oled-display",
+    name: 'OLED Display Module 0.96"',
+    description: "Crisp 128x64 pixel OLED display with I2C interface. Perfect for dashboards, status displays, and IoT readouts.",
+    price: 249,
+    category: "modules",
+    image: "https://images.unsplash.com/photo-1601132359864-c974e79890ac?w=400&h=400&fit=crop",
+    badge: "new",
+    rating: 4.6,
+    reviews: 98,
+    inStock: true,
+    specs: ["128x64 Resolution", "I2C Interface", "SSD1306 Driver", "3.3V/5V Compatible"],
+  },
+  {
+    id: "iot-starter-kit",
+    name: "IoT Starter Kit Pro",
+    description: "Everything you need to start your IoT journey. Includes ESP32, sensors, actuators, breadboard, wires, and a project guide.",
+    price: 2499,
+    originalPrice: 2999,
+    category: "kits",
+    image: "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=400&h=400&fit=crop",
+    badge: "sale",
+    rating: 4.9,
+    reviews: 167,
+    inStock: true,
+    specs: ["ESP32 Board", "10+ Sensors", "LED & Relay Modules", "Complete Guide"],
+  },
+  {
+    id: "robotics-arm-kit",
+    name: "6-DOF Robotic Arm Kit",
+    description: "Build your own programmable robotic arm. Includes servo motors, acrylic parts, and Arduino-compatible controller.",
+    price: 3999,
+    category: "robotics",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=400&fit=crop",
+    badge: "new",
+    rating: 4.7,
+    reviews: 73,
+    inStock: true,
+    specs: ["6 Degrees of Freedom", "MG996R Servos", "Arduino Compatible", "Acrylic Structure"],
+  },
+  {
+    id: "nodemcu-esp8266",
+    name: "NodeMCU ESP8266",
+    description: "Budget-friendly Wi-Fi enabled microcontroller. Lua and Arduino IDE compatible for rapid IoT prototyping.",
+    price: 299,
+    category: "boards",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=400&fit=crop",
+    rating: 4.5,
+    reviews: 289,
+    inStock: true,
+    specs: ["ESP8266 Wi-Fi", "80/160MHz", "4MB Flash", "Micro USB"],
+  },
+  {
+    id: "motor-driver-l298n",
+    name: "Motor Driver L298N",
+    description: "Dual H-bridge motor driver for controlling DC motors and stepper motors in robotics projects.",
+    price: 199,
+    category: "modules",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=400&fit=crop",
+    rating: 4.4,
+    reviews: 201,
+    inStock: true,
+    specs: ["Dual H-Bridge", "5-35V Input", "2A Per Channel", "Enable Pins"],
+  },
+  {
+    id: "iot-workshop",
+    name: "IoT Fundamentals Workshop",
+    description: "Live online 2-day workshop covering IoT architecture, sensor integration, cloud connectivity, and real-world projects.",
+    price: 1999,
+    category: "courses",
+    image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=400&fit=crop",
+    badge: "course",
+    rating: 4.8,
+    reviews: 89,
+    inStock: true,
+    specs: ["2-Day Live Workshop", "Hands-on Projects", "Certificate", "Recording Access"],
+  },
+  {
+    id: "embedded-course",
+    name: "Embedded Systems Masterclass",
+    description: "Comprehensive 8-week course on embedded systems programming, from bare metal to RTOS, with real hardware projects.",
+    price: 4999,
+    originalPrice: 6999,
+    category: "courses",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=400&fit=crop",
+    badge: "course",
+    rating: 4.9,
+    reviews: 156,
+    inStock: true,
+    specs: ["8 Weeks", "40+ Video Lessons", "Hardware Kit Included", "Lifetime Access"],
+  },
+  {
+    id: "servo-sg90",
+    name: "Micro Servo Motor SG90",
+    description: "Lightweight micro servo ideal for robotics, RC projects, and IoT actuators. Reliable and affordable.",
+    price: 99,
+    category: "robotics",
+    image: "https://images.unsplash.com/photo-1581092162384-8987c1d64718?w=400&h=400&fit=crop",
+    rating: 4.3,
+    reviews: 432,
+    inStock: true,
+    specs: ["180° Rotation", "1.8kg·cm Torque", "4.8V Operating", "3-Wire Interface"],
+  },
+  {
+    id: "gps-neo6m",
+    name: "GPS Module NEO-6M",
+    description: "High-sensitivity GPS receiver module with built-in antenna. Track location, speed, and altitude for IoT applications.",
+    price: 549,
+    category: "modules",
+    image: "https://images.unsplash.com/photo-1553406830-ef2513450d76?w=400&h=400&fit=crop",
+    rating: 4.5,
+    reviews: 118,
+    inStock: true,
+    specs: ["u-blox NEO-6M", "UART Interface", "Built-in Antenna", "-162dBm Sensitivity"],
+  },
+  {
+    id: "mq2-gas-sensor",
+    name: "MQ-2 Gas & Smoke Sensor",
+    description: "Detects LPG, propane, methane, alcohol, hydrogen, and smoke. Essential for safety and environmental monitoring IoT projects.",
+    price: 129,
+    category: "sensors",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=400&fit=crop",
+    rating: 4.2,
+    reviews: 167,
+    inStock: true,
+    specs: ["Analog + Digital Output", "Adjustable Sensitivity", "5V Operating", "Fast Response"],
+  },
+];
+
+export const getProductsByCategory = (category: string) =>
+  products.filter((p) => p.category === category);
+
+export const getFeaturedProducts = () =>
+  products.filter((p) => p.badge === "bestseller" || p.badge === "new").slice(0, 4);
+
+export const getBestSellers = () =>
+  products.filter((p) => p.rating >= 4.7).slice(0, 4);
+
+export const getProductById = (id: string) =>
+  products.find((p) => p.id === id);
