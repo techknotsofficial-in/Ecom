@@ -14,6 +14,7 @@ type SortOption = "featured" | "price-asc" | "price-desc" | "rating" | "name";
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = searchParams.get("category") || "all";
+  const searchQuery = searchParams.get("search") || "";
   const [sort, setSort] = useState<SortOption>("featured");
 
   const { data: products = [], isLoading: productsLoading } = useProducts();
@@ -27,6 +28,11 @@ const Products = () => {
           return cat ? p.category_id === cat.id : false;
         });
 
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((p) => p.name.toLowerCase().includes(q));
+    }
+
     switch (sort) {
       case "price-asc":
         return [...list].sort((a, b) => a.price - b.price);
@@ -39,7 +45,7 @@ const Products = () => {
       default:
         return list;
     }
-  }, [activeCategory, sort, products, categories]);
+  }, [activeCategory, searchQuery, sort, products, categories]);
 
   const setCategory = (cat: string) => {
     if (cat === "all") {
@@ -50,10 +56,14 @@ const Products = () => {
     setSearchParams(searchParams);
   };
 
-  const activeCategoryName =
+  let activeCategoryName =
     activeCategory === "all"
       ? "All Products"
       : categories.find((c) => c.slug === activeCategory)?.name || "Products";
+
+  if (searchQuery) {
+    activeCategoryName = `Search: "${searchQuery}"`;
+  }
 
   const isLoading = productsLoading || categoriesLoading;
 
