@@ -44,16 +44,18 @@ useEffect(() => {
 }, [items, cartLoaded]);
 
   const addItem = useCallback((product: Product, quantity = 1) => {
+    if (product.stock <= 0) return;
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
+        const newQty = Math.min(product.stock, existing.quantity + quantity);
         return prev.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: newQty }
             : item
         );
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, quantity: Math.min(product.stock, Math.max(1, quantity)) }];
     });
     setIsOpen(true);
   }, []);
@@ -68,9 +70,14 @@ useEffect(() => {
       return;
     }
     setItems((prev) =>
-      prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
-      )
+      prev.map((item) => {
+        if (item.product.id === productId) {
+          const maxStock = typeof item.product.stock === "number" ? item.product.stock : Infinity;
+          const cappedQty = Math.min(maxStock, quantity);
+          return { ...item, quantity: cappedQty };
+        }
+        return item;
+      })
     );
   }, []);
 

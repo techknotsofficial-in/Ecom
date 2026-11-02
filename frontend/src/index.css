@@ -109,4 +109,12 @@
   .hover-lift {
     @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

@@ -96,9 +96,11 @@ const Cart = () => {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 rounded-l-none"
+                        disabled={typeof item.product.stock === "number" && item.quantity >= item.product.stock}
                         onClick={() =>
                           updateQuantity(item.product.id, item.quantity + 1)
                         }
+                        aria-label="Increase quantity"
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
