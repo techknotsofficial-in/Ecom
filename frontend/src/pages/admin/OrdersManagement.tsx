@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { formatINR } from "@/components/ProductCard";
 import { Eye, Search, Loader2 } from "lucide-react";
+import TablePagination from "@/components/TablePagination";
 
+const PAGE_SIZE = 10;
 const statusOptions = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 
 const statusColors: Record<string, string> = {
@@ -23,21 +25,53 @@ const statusColors: Record<string, string> = {
 const OrdersManagement = () => {
   const { toast } = useToast();
   const [orders, setOrders] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [orderItems, setOrderItems] = useState<any[]>([]);
   const [trackingId, setTrackingId] = useState("");
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
-  const fetchOrders = async () => {
-    const { data } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
-    setOrders(data ?? []);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, statusFilter]);
+
+  const fetchOrders = async (targetPage = page, s = debouncedSearch, status = statusFilter) => {
+    setLoading(true);
+    let query = supabase.from("orders").select("*", { count: "exact" });
+    if (status !== "all") {
+      query = query.eq("status", status);
+    }
+    if (s.trim()) {
+      query = query.ilike("order_number", `%${s.trim()}%`);
+    }
+    const from = (targetPage - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    const { data, count, error } = await query
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (!error) {
+      setOrders(data ?? []);
+      setTotalCount(count ?? 0);
+    }
     setLoading(false);
   };
 
-  useEffect(() => { fetchOrders(); }, []);
+  useEffect(() => {
+    fetchOrders(page, debouncedSearch, statusFilter);
+  }, [page, debouncedSearch, statusFilter]);
 
   const openOrder = async (order: any) => {
     setSelectedOrder(order);
@@ -60,7 +94,7 @@ const OrdersManagement = () => {
         tracking_id: trackingId || null,
       });
       toast({ title: "Status updated" });
-      fetchOrders();
+      fetchOrders(page, debouncedSearch, statusFilter);
       if (selectedOrder?.id === orderId) {
         setSelectedOrder({ ...selectedOrder, status: newStatus });
       }
@@ -68,19 +102,15 @@ const OrdersManagement = () => {
     setUpdatingStatus(false);
   };
 
-  const filtered = orders.filter((o) => {
-    const matchSearch = o.order_number.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || o.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
-
-  if (loading) return <div className="flex items-center justify-center py-20 text-muted-foreground">Loading orders...</div>;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="font-heading text-2xl font-bold">Orders</h1>
-        <p className="text-muted-foreground">{orders.length} total orders</p>
+      <div className="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-heading text-2xl font-bold">Orders</h1>
+          <p className="text-muted-foreground">{totalCount} total orders</p>
+        </div>
       </div>
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
@@ -102,7 +132,7 @@ const OrdersManagement = () => {
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
-            <tr>
+            <tr className="whitespace-nowrap">
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Order #</th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Date</th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Total</th>
@@ -111,8 +141,17 @@ const OrdersManagement = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {filtered.map((o) => (
-              <tr key={o.id} className="hover:bg-muted/30">
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <span>Loading orders...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : orders.map((o) => (
+              <tr key={o.id} className="hover:bg-muted/30 whitespace-nowrap">
                 <td className="px-4 py-3 font-medium font-mono">{o.order_number}</td>
                 <td className="px-4 py-3 text-muted-foreground">{new Date(o.created_at).toLocaleDateString("en-IN")}</td>
                 <td className="px-4 py-3 font-medium">{formatINR(Number(o.total))}</td>
@@ -128,12 +167,18 @@ const OrdersManagement = () => {
                 </td>
               </tr>
             ))}
-            {filtered.length === 0 && (
+            {!loading && orders.length === 0 && (
               <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No orders found.</td></tr>
             )}
           </tbody>
         </table>
       </div>
+
+      <TablePagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
 
       {/* Order detail dialog */}
       <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>

@@ -52,7 +52,7 @@ const Cart = () => {
                 transition={{ delay: i * 0.05 }}
                 className="flex gap-4 rounded-xl border border-border bg-card p-4"
               >
-                <Link to={`/product/${item.product.slug}`}>
+                <Link to={`/product/${item.product.slug}`} className="shrink-0">
                   <img
                     src={item.product.image_url || "/placeholder.svg"}
                     alt={item.product.name}

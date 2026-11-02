@@ -161,8 +161,8 @@ const Navbar = () => {
             className="md:hidden border-t border-border/50 overflow-hidden"
           >
             <div className="container py-4 flex flex-col gap-1">
-              <form onSubmit={handleSearch} className="px-4 py-2 mb-2 relative">
-                <Search className="absolute left-7 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <form onSubmit={handleSearch} className="py-2 mb-2 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search products..."

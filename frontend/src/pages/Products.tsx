@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Filter, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,9 @@ import ProductCard from "@/components/ProductCard";
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
 import { motion } from "framer-motion";
+import TablePagination from "@/components/TablePagination";
 
+const PAGE_SIZE = 12;
 type SortOption = "featured" | "price-asc" | "price-desc" | "rating" | "name";
 
 const Products = () => {
@@ -16,6 +18,7 @@ const Products = () => {
   const activeCategory = searchParams.get("category") || "all";
   const searchQuery = searchParams.get("search") || "";
   const [sort, setSort] = useState<SortOption>("featured");
+  const [page, setPage] = useState(1);
 
   const { data: products = [], isLoading: productsLoading } = useProducts();
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
@@ -46,6 +49,22 @@ const Products = () => {
         return list;
     }
   }, [activeCategory, searchQuery, sort, products, categories]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [activeCategory, searchQuery, sort]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE) || 1;
+
+  const paginatedProducts = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filtered.slice(start, start + PAGE_SIZE);
+  }, [filtered, page]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const setCategory = (cat: string) => {
     if (cat === "all") {
@@ -143,16 +162,24 @@ const Products = () => {
             ))}
           </div>
         ) : filtered.length > 0 ? (
-          <motion.div
-            key={activeCategory + sort}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-          >
-            {filtered.map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} />
-            ))}
-          </motion.div>
+          <>
+            <motion.div
+              key={activeCategory + sort + page}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            >
+              {paginatedProducts.map((product, i) => (
+                <ProductCard key={product.id} product={product} index={i} />
+              ))}
+            </motion.div>
+
+            <TablePagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </>
         ) : (
           <div className="py-20 text-center">
             <p className="text-lg text-muted-foreground">

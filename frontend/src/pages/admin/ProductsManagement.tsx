@@ -11,6 +11,9 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { formatINR } from "@/components/ProductCard";
 import ImageUpload from "@/components/ImageUpload";
+import TablePagination from "@/components/TablePagination";
+
+const PAGE_SIZE = 10;
 
 interface ProductRow {
   id: string;
@@ -54,24 +57,55 @@ const ProductsManagement = () => {
   const { toast } = useToast();
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [categories, setCategories] = useState<CategoryRow[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState(emptyProduct);
   const [saving, setSaving] = useState(false);
 
-  const fetchData = async () => {
-    const [prodRes, catRes] = await Promise.all([
-      supabase.from("products").select("*").order("created_at", { ascending: false }),
-      supabase.from("categories").select("id, name, slug"),
-    ]);
-    setProducts((prodRes.data as ProductRow[]) ?? []);
-    setCategories((catRes.data as CategoryRow[]) ?? []);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
+
+  const fetchProducts = async (targetPage = page, s = debouncedSearch) => {
+    setLoading(true);
+    let query = supabase.from("products").select("*", { count: "exact" });
+    if (s.trim()) {
+      query = query.ilike("name", `%${s.trim()}%`);
+    }
+    const from = (targetPage - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    const { data, count, error } = await query
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (!error) {
+      setProducts((data as ProductRow[]) ?? []);
+      setTotalCount(count ?? 0);
+    }
     setLoading(false);
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    supabase.from("categories").select("id, name, slug").then(({ data }) => {
+      setCategories((data as CategoryRow[]) ?? []);
+    });
+  }, []);
+
+  useEffect(() => {
+    fetchProducts(page, debouncedSearch);
+  }, [page, debouncedSearch]);
 
   const generateSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
@@ -128,7 +162,7 @@ const ProductsManagement = () => {
     } else {
       toast({ title: editing ? "Product updated" : "Product created" });
       setDialogOpen(false);
-      fetchData();
+      fetchProducts(page, debouncedSearch);
     }
     setSaving(false);
   };
@@ -140,20 +174,18 @@ const ProductsManagement = () => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Product deleted" });
-      fetchData();
+      fetchProducts(page, debouncedSearch);
     }
   };
 
-  const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
-
-  if (loading) return <div className="flex items-center justify-center py-20 text-muted-foreground">Loading products...</div>;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
     <div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-2xl font-bold">Products</h1>
-          <p className="text-muted-foreground">{products.length} total products</p>
+          <p className="text-muted-foreground">{totalCount} total products</p>
         </div>
         <Button onClick={openCreate}>
           <Plus className="mr-2 h-4 w-4" />
@@ -170,7 +202,7 @@ const ProductsManagement = () => {
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
-            <tr>
+            <tr className="whitespace-nowrap">
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Product</th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Price</th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Stock</th>
@@ -179,8 +211,17 @@ const ProductsManagement = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {filtered.map((p) => (
-              <tr key={p.id} className="hover:bg-muted/30">
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <span>Loading products...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : products.map((p) => (
+              <tr key={p.id} className="hover:bg-muted/30 whitespace-nowrap">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     {p.image_url && (
@@ -217,7 +258,7 @@ const ProductsManagement = () => {
                 </td>
               </tr>
             ))}
-            {filtered.length === 0 && (
+            {!loading && products.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No products found.</td>
               </tr>
@@ -225,6 +266,12 @@ const ProductsManagement = () => {
           </tbody>
         </table>
       </div>
+
+      <TablePagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

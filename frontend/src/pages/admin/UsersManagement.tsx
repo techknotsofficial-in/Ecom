@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, ShieldCheck, User } from "lucide-react";
+import { Search, ShieldCheck, User, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import TablePagination from "@/components/TablePagination";
+
+const PAGE_SIZE = 10;
 
 interface ProfileRow {
   id: string;
@@ -19,26 +22,68 @@ const UsersManagement = () => {
   const { toast } = useToast();
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [roles, setRoles] = useState<Record<string, string[]>>({});
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const fetchData = async () => {
-    const [profilesRes, rolesRes] = await Promise.all([
-      supabase.from("profiles").select("*").order("created_at", { ascending: false }),
-      supabase.from("user_roles").select("*"),
-    ]);
-    setProfiles((profilesRes.data as ProfileRow[]) ?? []);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [search]);
 
-    const rolesMap: Record<string, string[]> = {};
-    (rolesRes.data ?? []).forEach((r: any) => {
-      if (!rolesMap[r.user_id]) rolesMap[r.user_id] = [];
-      rolesMap[r.user_id].push(r.role);
-    });
-    setRoles(rolesMap);
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
+
+  const fetchData = async (targetPage = page, s = debouncedSearch) => {
+    setLoading(true);
+    let query = supabase
+      .from("profiles")
+      .select("id, user_id, full_name, phone, city, state, created_at", { count: "exact" });
+
+    if (s.trim()) {
+      query = query.ilike("full_name", `%${s.trim()}%`);
+    }
+
+    const from = (targetPage - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    const { data: profilesData, count, error } = await query
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (!error && profilesData) {
+      setProfiles(profilesData as ProfileRow[]);
+      setTotalCount(count ?? 0);
+
+      // Only query user_roles for the users present on the current page
+      const userIds = profilesData.map((p) => p.user_id).filter(Boolean);
+      if (userIds.length > 0) {
+        const { data: rolesData } = await supabase
+          .from("user_roles")
+          .select("user_id, role")
+          .in("user_id", userIds);
+
+        const rolesMap: Record<string, string[]> = {};
+        (rolesData ?? []).forEach((r: any) => {
+          if (!rolesMap[r.user_id]) rolesMap[r.user_id] = [];
+          rolesMap[r.user_id].push(r.role);
+        });
+        setRoles(rolesMap);
+      } else {
+        setRoles({});
+      }
+    }
     setLoading(false);
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData(page, debouncedSearch);
+  }, [page, debouncedSearch]);
 
   const toggleAdmin = async (userId: string, currentlyAdmin: boolean) => {
     if (currentlyAdmin) {
@@ -50,21 +95,18 @@ const UsersManagement = () => {
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Admin role granted" });
     }
-    fetchData();
+    fetchData(page, debouncedSearch);
   };
 
-  const filtered = profiles.filter((p) =>
-    (p.full_name || "").toLowerCase().includes(search.toLowerCase()) ||
-    p.user_id.toLowerCase().includes(search.toLowerCase())
-  );
-
-  if (loading) return <div className="flex items-center justify-center py-20 text-muted-foreground">Loading users...</div>;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="font-heading text-2xl font-bold">Users</h1>
-        <p className="text-muted-foreground">{profiles.length} registered users</p>
+      <div className="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-heading text-2xl font-bold">Users</h1>
+          <p className="text-muted-foreground">{totalCount} registered users</p>
+        </div>
       </div>
 
       <div className="mb-4 relative max-w-sm">
@@ -75,7 +117,7 @@ const UsersManagement = () => {
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
-            <tr>
+            <tr className="whitespace-nowrap">
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">User</th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Location</th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Role</th>
@@ -84,11 +126,20 @@ const UsersManagement = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {filtered.map((p) => {
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <span>Loading users...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : profiles.map((p) => {
               const userRoles = roles[p.user_id] || [];
               const isAdmin = userRoles.includes("admin");
               return (
-                <tr key={p.id} className="hover:bg-muted/30">
+                <tr key={p.id} className="hover:bg-muted/30 whitespace-nowrap">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
@@ -125,12 +176,18 @@ const UsersManagement = () => {
                 </tr>
               );
             })}
-            {filtered.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No users found.</td></tr>
+            {!loading && profiles.length === 0 && (
+              <tr className="whitespace-nowrap"><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No users found.</td></tr>
             )}
           </tbody>
         </table>
       </div>
+
+      <TablePagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
     </div>
   );
 };

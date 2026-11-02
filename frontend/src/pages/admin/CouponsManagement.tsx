@@ -129,7 +129,7 @@ const CouponsManagement = () => {
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
-            <tr>
+            <tr className="whitespace-nowrap">
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Code</th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Discount</th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">Min Order</th>
@@ -140,7 +140,7 @@ const CouponsManagement = () => {
           </thead>
           <tbody className="divide-y divide-border">
             {coupons.map((c) => (
-              <tr key={c.id} className="hover:bg-muted/30">
+              <tr key={c.id} className="hover:bg-muted/30 whitespace-nowrap">
                 <td className="px-4 py-3 font-mono font-bold">{c.code}</td>
                 <td className="px-4 py-3">
                   {c.discount_type === "percentage" ? `${c.discount_value}%` : formatINR(c.discount_value)}
@@ -163,7 +163,7 @@ const CouponsManagement = () => {
               </tr>
             ))}
             {coupons.length === 0 && (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">No coupons yet.</td></tr>
+              <tr className="whitespace-nowrap"><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">No coupons yet.</td></tr>
             )}
           </tbody>
         </table>

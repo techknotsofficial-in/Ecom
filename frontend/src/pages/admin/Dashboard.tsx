@@ -44,19 +44,44 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const [productsRes, ordersRes, usersRes, pendingRes, recentRes] = await Promise.all([
+      try {
+        // Attempt to call RPC if present
+        const { data: rpcData, error: rpcError } = await supabase.rpc("get_admin_dashboard_stats" as any);
+        if (!rpcError && rpcData) {
+          const res = rpcData as any;
+          setStats({
+            totalProducts: Number(res.totalProducts ?? 0),
+            totalOrders: Number(res.totalOrders ?? 0),
+            totalUsers: Number(res.totalUsers ?? 0),
+            totalRevenue: Number(res.totalRevenue ?? 0),
+            pendingOrders: Number(res.pendingOrders ?? 0),
+            recentOrders: res.recentOrders ?? [],
+          });
+          setLoading(false);
+          return;
+        }
+      } catch {
+        // RPC not available yet; proceed with optimized fallback queries
+      }
+
+      // Optimized fallback:
+      // 1. Exact count head queries for products, total orders, users, and pending orders (0 row bytes)
+      // 2. Filtered revenue query excluding cancelled and failed_stock orders
+      // 3. Limit 5 for recent orders
+      const [productsRes, ordersCountRes, usersRes, pendingRes, revenueRes, recentRes] = await Promise.all([
         supabase.from("products").select("id", { count: "exact", head: true }),
-        supabase.from("orders").select("total"),
+        supabase.from("orders").select("id", { count: "exact", head: true }),
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("orders").select("total").in("status", ["confirmed", "processing", "shipped", "delivered"]),
         supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(5),
       ]);
 
-      const totalRevenue = ordersRes.data?.reduce((sum, o) => sum + Number(o.total), 0) ?? 0;
+      const totalRevenue = revenueRes.data?.reduce((sum, o) => sum + Number(o.total), 0) ?? 0;
 
       setStats({
         totalProducts: productsRes.count ?? 0,
-        totalOrders: ordersRes.data?.length ?? 0,
+        totalOrders: ordersCountRes.count ?? 0,
         totalUsers: usersRes.count ?? 0,
         totalRevenue,
         pendingOrders: pendingRes.count ?? 0,

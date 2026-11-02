@@ -121,8 +121,8 @@ const UserDashboard = () => {
                     className="rounded-xl border border-border bg-card overflow-hidden"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3 p-4">
-                      <div>
-                        <p className="font-heading font-bold font-mono">{order.order_number}</p>
+                      <div className="min-w-0 flex-1 pr-4">
+                        <p className="font-heading font-bold font-mono break-all">{order.order_number}</p>
                         <p className="text-sm text-muted-foreground">
                           {new Date(order.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                         </p>
