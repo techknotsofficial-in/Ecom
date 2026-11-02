@@ -118,9 +118,9 @@ const CategoriesManagement = () => {
         </Button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {categories.map((c) => (
-          <div key={c.id} className="rounded-xl border border-border bg-card p-4">
+          <div key={c.id} className="min-w-0 w-full rounded-xl border border-border bg-card p-4">
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-heading font-bold">{c.name}</h3>

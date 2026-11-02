@@ -27,6 +27,24 @@ const Products = () => {
     let list = activeCategory === "all"
       ? products
       : products.filter((p) => {
+          if (activeCategory === "kits") {
+            const kitCatIds = categories
+              .filter((c) => c.slug.includes("kit"))
+              .map((c) => c.id);
+            return (
+              (p.category_id && kitCatIds.includes(p.category_id)) ||
+              p.name.toLowerCase().includes("kit") ||
+              p.name.toLowerCase().includes("arm") ||
+              p.name.toLowerCase().includes("robot")
+            );
+          }
+          if (activeCategory === "courses") {
+            return (
+              p.badge === "course" ||
+              p.name.toLowerCase().includes("course") ||
+              p.name.toLowerCase().includes("masterclass")
+            );
+          }
           const cat = categories.find((c) => c.slug === activeCategory);
           return cat ? p.category_id === cat.id : false;
         });
@@ -89,6 +107,10 @@ const Products = () => {
   let activeCategoryName =
     activeCategory === "all"
       ? "All Products"
+      : activeCategory === "kits"
+      ? "Kits & Robotics"
+      : activeCategory === "courses"
+      ? "Courses & Workshops"
       : categories.find((c) => c.slug === activeCategory)?.name || "Products";
 
   if (searchQuery) {
@@ -181,7 +203,7 @@ const Products = () => {
 
         {/* Product Grid */}
         {isLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
@@ -205,7 +227,7 @@ const Products = () => {
               key={activeCategory + sort + page}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             >
               {paginatedProducts.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />

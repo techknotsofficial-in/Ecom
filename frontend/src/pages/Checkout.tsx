@@ -288,7 +288,7 @@ if (!cartLoaded) {
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="mb-4 font-heading text-lg font-bold">Shipping Address</h2>
               <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Full Name *</Label>
                     <Input value={address.full_name} onChange={(e) => setAddress({ ...address, full_name: e.target.value })} />
@@ -309,7 +309,7 @@ if (!cartLoaded) {
     }
   />
 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label>City *</Label><Input value={address.city} readOnly className="bg-muted" />
                   </div>

@@ -179,7 +179,7 @@ const UserDashboard = () => {
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="mb-4 font-heading text-lg font-bold">Profile Information</h2>
               <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Full Name</Label>
                     <Input value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} maxLength={100} />
@@ -193,7 +193,7 @@ const UserDashboard = () => {
                   <Label>Address</Label>
                   <Input value={profile.address} onChange={(e) => setProfile({ ...profile, address: e.target.value })} maxLength={300} />
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label>City</Label>
                     <Input value={profile.city} onChange={(e) => setProfile({ ...profile, city: e.target.value })} maxLength={100} />

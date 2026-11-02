@@ -50,20 +50,20 @@ const Cart = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="flex gap-4 rounded-xl border border-border bg-card p-4"
+                className="flex gap-3 sm:gap-4 rounded-xl border border-border bg-card p-3 sm:p-4 min-w-0"
               >
                 <Link to={`/product/${item.product.slug}`} className="shrink-0">
                   <img
                     src={item.product.image_url || "/placeholder.svg"}
                     alt={item.product.name}
-                    className="h-24 w-24 rounded-lg object-cover"
+                    className="h-20 w-20 sm:h-24 sm:w-24 rounded-lg object-cover"
                   />
                 </Link>
-                <div className="flex flex-1 flex-col">
+                <div className="flex flex-1 flex-col min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <Link
                       to={`/product/${item.product.slug}`}
-                      className="font-heading font-semibold hover:text-primary transition-colors"
+                      className="font-heading font-semibold hover:text-primary transition-colors truncate"
                     >
                       {item.product.name}
                     </Link>
@@ -76,8 +76,8 @@ const Cart = () => {
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{item.product.description?.slice(0, 60) || ""}</p>
-                  <div className="mt-auto flex items-center justify-between pt-2">
+                  <p className="mt-1 text-sm text-muted-foreground line-clamp-1">{item.product.description?.slice(0, 60) || ""}</p>
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
                     <div className="flex items-center rounded-lg border border-border">
                       <Button
                         variant="ghost"

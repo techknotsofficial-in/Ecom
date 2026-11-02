@@ -265,7 +265,7 @@ const ProductDetail = () => {
                 <h2 className="mb-3 font-heading text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Technical Specifications
                 </h2>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {parsedSpecs.map((spec, idx) => (
                     <div
                       key={idx}
@@ -353,7 +353,7 @@ const ProductDetail = () => {
             <h2 className="mb-6 font-heading text-2xl font-bold">
               Related Products
             </h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {related.map((p, i) => (
                 <ProductCard key={p.id} product={p} index={i} />
               ))}
