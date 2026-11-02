@@ -25,6 +25,7 @@ import UsersManagement from "./pages/admin/UsersManagement";
 import CouponsManagement from "./pages/admin/CouponsManagement";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/Callback";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <AuthProvider>
           <CartProvider>
             <div className="flex min-h-screen flex-col overflow-x-hidden w-full">
