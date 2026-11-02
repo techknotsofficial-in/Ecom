@@ -34,7 +34,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)]">
+    <div className="flex min-h-[calc(100vh-4rem)] w-full overflow-x-hidden">
       {/* Mobile overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden" onClick={() => setMobileOpen(false)} />
@@ -96,7 +96,7 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 overflow-x-hidden">
         {/* Mobile header */}
         <div className="sticky top-16 z-30 flex items-center gap-3 border-b border-border bg-background px-4 py-3 md:hidden">
           <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)}>

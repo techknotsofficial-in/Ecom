@@ -106,7 +106,7 @@ const ProductDetail = () => {
   const isLowStock = product.stock > 0 && product.stock <= 5;
 
   return (
-    <main className="py-8 md:py-12">
+    <main className="py-8 md:py-12 w-full overflow-x-hidden">
       <div className="container">
         {/* Breadcrumb / Back button */}
         <Link
@@ -120,9 +120,9 @@ const ProductDetail = () => {
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-start">
           {/* Image Gallery Column */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col gap-3"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col gap-3 min-w-0 w-full"
           >
             {/* Main Image Frame */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-border/60 bg-muted/20 p-6 flex items-center justify-center">
@@ -176,9 +176,9 @@ const ProductDetail = () => {
 
           {/* Details Column */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col min-w-0 w-full"
           >
             <h1 className="mb-3 font-heading text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
               {product.name}

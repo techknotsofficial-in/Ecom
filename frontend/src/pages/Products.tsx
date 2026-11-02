@@ -98,7 +98,7 @@ const Products = () => {
   const isLoading = productsLoading || categoriesLoading;
 
   return (
-    <main className="py-8 md:py-12">
+    <main className="py-8 md:py-12 w-full overflow-x-hidden">
       <div className="container">
         {/* Header */}
         <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
@@ -129,7 +129,7 @@ const Products = () => {
         {/* Filters & Sorting Toolbar */}
         <div className="mb-8 flex flex-col gap-4 border-b border-border/50 pb-6 md:flex-row md:items-center md:justify-between">
           {/* Category Filter Pills (Scrollable on mobile) */}
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="w-full min-w-0 flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
             <div className="flex shrink-0 items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider pr-1">
               <Filter className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Category:</span>

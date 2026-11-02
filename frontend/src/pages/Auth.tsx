@@ -64,7 +64,7 @@ const Auth = () => {
   };
 
   return (
-    <main className="flex min-h-[75vh] items-center justify-center py-12">
+    <main className="flex min-h-[75vh] w-full overflow-x-hidden items-center justify-center py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -274,7 +274,7 @@ if (!cartLoaded) {
   }
 
   return (
-    <main className="py-8 md:py-12">
+    <main className="py-8 md:py-12 w-full overflow-x-hidden">
       <div className="container max-w-4xl">
         <Link to="/cart" className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to Cart

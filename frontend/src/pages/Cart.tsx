@@ -29,7 +29,7 @@ const Cart = () => {
   const grandTotal = totalPrice + shipping;
 
   return (
-    <main className="py-8 md:py-12">
+    <main className="py-8 md:py-12 w-full overflow-x-hidden">
       <div className="container">
         <Link
           to="/products"

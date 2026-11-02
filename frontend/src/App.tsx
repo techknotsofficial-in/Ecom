@@ -36,7 +36,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
-            <div className="flex min-h-screen flex-col">
+            <div className="flex min-h-screen flex-col overflow-x-hidden w-full">
               <Navbar />
               <div className="flex-1">
                 <Routes>

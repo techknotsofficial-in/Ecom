@@ -94,7 +94,7 @@ const UserDashboard = () => {
   }
 
   return (
-    <main className="py-8 md:py-12">
+    <main className="py-8 md:py-12 w-full overflow-x-hidden">
       <div className="container max-w-4xl">
         <h1 className="mb-6 font-heading text-3xl font-bold">My Account</h1>
 

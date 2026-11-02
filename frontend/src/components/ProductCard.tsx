@@ -53,7 +53,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.04 }}
-      className="group relative flex h-full flex-col rounded-xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20"
+      className="group relative flex h-full min-w-0 w-full flex-col rounded-xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20"
     >
       {/* Image Container with Badges */}
       <Link
@@ -120,8 +120,8 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
         </div>
 
         {/* Price & Action */}
-        <div className="mt-auto pt-3 flex items-center justify-between border-t border-border/40">
-          <div className="flex flex-col">
+        <div className="mt-auto pt-3 flex items-center justify-between border-t border-border/40 gap-2">
+          <div className="flex flex-col min-w-0 flex-1">
             <div className="flex items-baseline gap-1.5 flex-wrap">
               <span className="font-heading text-base sm:text-lg font-bold text-foreground">
                 {formatINR(product.price)}

@@ -158,7 +158,7 @@ const Navbar = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden border-t border-border/50 overflow-hidden"
+            className="md:hidden border-t border-border/50 overflow-hidden bg-background/95 backdrop-blur-md"
           >
             <div className="container py-4 flex flex-col gap-1">
               <form onSubmit={handleSearch} className="py-2 mb-2 relative">
