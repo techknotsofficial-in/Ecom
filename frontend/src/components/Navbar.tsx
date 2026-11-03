@@ -11,6 +11,9 @@ import {
   ShieldCheck,
   LayoutDashboard,
   MapPin,
+  HelpCircle,
+  PhoneCall,
+  Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,28 +60,33 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/70 shadow-2xs">
       {/* Main Bar */}
-      <div className="container px-3 sm:px-4 lg:px-6">
-        <div className="flex h-13 sm:h-16 items-center justify-between gap-1.5 sm:gap-2">
-          {/* Left: Brand Logo */}
+      <div className="container px-3.5 sm:px-4 lg:px-6">
+        {/* Top Header Row: 56px on mobile (h-14), 64px on sm+ (sm:h-16) */}
+        <div className="flex h-14 sm:h-16 items-center justify-between gap-2">
+          {/* Left: Brand Logo & Breathing Space */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <Link to="/" className="flex items-center gap-1.5 sm:gap-2 group">
-              <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-105 shadow-2xs">
-                <Zap className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Link
+              to="/"
+              className="flex items-center gap-2 group py-1"
+              aria-label="Volkitz Home"
+            >
+              <div className="flex h-9 w-9 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-105 shadow-2xs">
+                <Zap className="h-5 w-5 sm:h-5 sm:w-5" />
               </div>
-              <span className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground">
+              <span className="font-heading text-xl sm:text-xl font-bold tracking-tight text-foreground">
                 Vol<span className="text-primary">kitz</span>
               </span>
             </Link>
 
-            {/* Mobile / Compact Location indicator */}
-            <div className="hidden min-[380px]:flex md:hidden items-center gap-1 text-[11px] text-muted-foreground border-l border-border/60 pl-2 ml-1">
+            {/* Location indicator */}
+            <div className="hidden min-[380px]:flex md:hidden items-center gap-1 text-[11px] text-muted-foreground border-l border-border/60 pl-2.5 ml-1">
               <MapPin className="h-3 w-3 text-primary shrink-0" />
-              <span className="truncate max-w-[90px]">India</span>
+              <span className="truncate max-w-[85px]">India</span>
             </div>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-0.5 lg:gap-1">
+          <nav className="hidden md:flex items-center gap-1 lg:gap-1.5">
             {navLinks.map((link) => {
               const isActive =
                 location.pathname === link.to ||
@@ -87,7 +95,7 @@ const Navbar = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`px-2.5 lg:px-3.5 py-1.5 rounded-lg text-xs lg:text-sm font-medium transition-colors ${
+                  className={`px-3 lg:px-3.5 py-1.5 rounded-lg text-xs lg:text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-primary/10 text-primary font-semibold"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -107,7 +115,7 @@ const Navbar = () => {
               <Input
                 type="search"
                 placeholder="Search products..."
-                className="w-[130px] md:w-[150px] lg:w-[240px] pl-9 h-9 bg-muted/50 border-border/60 focus-visible:ring-1 focus-visible:bg-background transition-colors text-xs"
+                className="w-[140px] md:w-[160px] lg:w-[240px] pl-9 h-9 bg-muted/50 border-border/60 focus-visible:ring-1 focus-visible:bg-background transition-colors text-xs"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -123,10 +131,15 @@ const Navbar = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9 relative">
-                    <User className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 sm:h-9 sm:w-9 relative text-foreground hover:bg-muted"
+                    aria-label="User Account Menu"
+                  >
+                    <User className="h-5 w-5 sm:h-5 sm:w-5" />
                     {isAdmin && (
-                      <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary" />
+                      <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
                     )}
                   </Button>
                 </DropdownMenuTrigger>
@@ -158,11 +171,11 @@ const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 md:hidden text-foreground"
+                  className="h-10 w-10 md:hidden text-foreground hover:bg-muted"
                   onClick={() => navigate("/auth")}
                   aria-label="Sign in"
                 >
-                  <User className="h-4 w-4" />
+                  <User className="h-5 w-5" />
                 </Button>
                 <Button variant="outline" size="sm" className="hidden md:flex h-9 text-xs" asChild>
                   <Link to="/auth">Sign In</Link>
@@ -174,43 +187,43 @@ const Navbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="relative h-8 w-8 sm:h-9 sm:w-9 text-foreground"
+              className="relative h-10 w-10 sm:h-9 sm:w-9 text-foreground hover:bg-muted"
               onClick={() => setIsOpen(true)}
               aria-label={`Shopping cart with ${totalItems} items`}
             >
-              <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
+              <ShoppingCart className="h-5 w-5 sm:h-5 sm:w-5" />
               {totalItems > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 flex h-4.5 w-4.5 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs"
+                  className="absolute 0.5 top-1 right-1 flex h-4.5 w-4.5 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs"
                 >
                   {totalItems > 99 ? "99+" : totalItems}
                 </motion.span>
               )}
             </Button>
 
-            {/* Mobile Hamburger / Close Button */}
+            {/* Mobile Hamburger / Close Button (Touch Friendly 40x40) */}
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 md:hidden text-foreground"
+              className="h-10 w-10 md:hidden text-foreground hover:bg-muted"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle navigation menu"
             >
-              {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Search Bar Row (Always visible on mobile - Flipkart Style) */}
-        <div className="md:hidden pb-2.5 pt-0.5">
+        {/* Mobile Search Bar Row (Touch Usable ~46px row, ~116px combined mobile header) */}
+        <div className="md:hidden pb-3 pt-1">
           <form onSubmit={handleSearch} className="relative flex items-center w-full">
-            <Search className="absolute left-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Search className="absolute left-3.5 h-4.5 w-4.5 text-muted-foreground pointer-events-none" />
             <Input
               type="search"
               placeholder="Search sensors, boards, robotics..."
-              className="w-full pl-9 pr-3 h-9 bg-muted/60 border border-border/80 focus-visible:bg-background text-xs rounded-lg"
+              className="w-full pl-10 pr-3 h-11 bg-muted/60 border border-border/80 focus-visible:bg-background text-sm rounded-lg shadow-2xs"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -228,6 +241,9 @@ const Navbar = () => {
             className="md:hidden border-t border-border/60 overflow-hidden bg-background/98 backdrop-blur-md"
           >
             <div className="container px-4 py-3 flex flex-col gap-1">
+              <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Explore Products
+              </p>
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
@@ -239,7 +255,37 @@ const Navbar = () => {
                 </Link>
               ))}
 
-              <div className="my-1 border-t border-border/60" />
+              <div className="my-1.5 border-t border-border/60" />
+
+              <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Company & Support
+              </p>
+              <Link
+                to="/about"
+                onClick={() => setMobileOpen(false)}
+                className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-2.5"
+              >
+                <Info className="h-4 w-4 text-primary" />
+                <span>About Us</span>
+              </Link>
+              <Link
+                to="/help"
+                onClick={() => setMobileOpen(false)}
+                className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-2.5"
+              >
+                <HelpCircle className="h-4 w-4 text-primary" />
+                <span>Help Center & FAQs</span>
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setMobileOpen(false)}
+                className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-2.5"
+              >
+                <PhoneCall className="h-4 w-4 text-primary" />
+                <span>Contact Support</span>
+              </Link>
+
+              <div className="my-1.5 border-t border-border/60" />
 
               {!user ? (
                 <Link

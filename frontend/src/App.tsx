@@ -27,6 +27,18 @@ import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/Callback";
 import ScrollToTop from "@/components/ScrollToTop";
 
+// Company & Support Pages
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Careers from "./pages/Careers";
+import HelpCenter from "./pages/HelpCenter";
+import FAQs from "./pages/FAQs";
+import ShippingPolicy from "./pages/ShippingPolicy";
+import ReturnPolicy from "./pages/ReturnPolicy";
+import Warranty from "./pages/Warranty";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -79,6 +91,26 @@ const App = () => (
                     <Route path="users" element={<UsersManagement />} />
                     <Route path="coupons" element={<CouponsManagement />} />
                   </Route>
+
+                  {/* Company Routes */}
+                  <Route path="/about" element={<About />} />
+                  <Route path="/mission" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/careers" element={<Careers />} />
+
+                  {/* Customer Support & Policies Routes */}
+                  <Route path="/help" element={<HelpCenter />} />
+                  <Route path="/help-center" element={<HelpCenter />} />
+                  <Route path="/faqs" element={<FAQs />} />
+                  <Route path="/shipping" element={<ShippingPolicy />} />
+                  <Route path="/returns" element={<ReturnPolicy />} />
+                  <Route path="/refund-policy" element={<ReturnPolicy />} />
+                  <Route path="/warranty" element={<Warranty />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/terms-of-service" element={<Terms />} />
+
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
